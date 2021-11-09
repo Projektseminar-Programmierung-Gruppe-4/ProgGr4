@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'Gr4.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'users' ,
-        'USER' : 'postgres' ,
-        'PASSWORD' : 'Maxstinkt123',
+        'NAME': 'projektprogrammierung' ,
+        'USER' : 'testUser' ,
+        'PASSWORD' : 'maxstinkt123',
         'HOST' : 'localhost' ,
-        'PORT' : '5000'
+        'PORT' : '5432'
     }
 }
 
