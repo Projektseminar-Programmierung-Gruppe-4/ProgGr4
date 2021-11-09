@@ -127,7 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-Gr4/Gr4/settings.py
+/Gr4/Gr4/settings.py
 
 
 
