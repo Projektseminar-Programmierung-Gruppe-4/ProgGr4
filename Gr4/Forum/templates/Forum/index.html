@@ -2,15 +2,16 @@
 <html>
 <header>
     <h1>Dann probier mer die Scheiße mal aus</h1>
+    <a href="/create">Neuen Eintrag reinfetzen hier</a>
 </header>
 <body>
  
 {% for post in posts %}
     <article>
-        <time>published: {{ post.published_date }}</time>
-        <h2><a href="./create.html">{{ post.title }}</a></h2>
+        <h2><a href="">{{ post.title }}</a></h2>
         <p>{{ post.text|linebreaksbr }}</p>
         <p>Votecount = {{post.voteCount}}</p>
+        <time>published: {{ post.published_date }}</time>
     </article>
 {% endfor %}
 
