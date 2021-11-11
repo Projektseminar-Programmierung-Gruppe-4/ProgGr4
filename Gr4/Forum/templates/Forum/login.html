@@ -6,6 +6,11 @@
     </head>
     <body>
         <header class="page-header">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <div class="container">
                 <h1><a href="/">Inside</a></h1>
             </div>

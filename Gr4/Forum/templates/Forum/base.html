@@ -9,12 +9,42 @@
 </head>
 <body>
     <header>
-        <h1>
-            <a href="/">Inside</a>
-        </h1>
+        {% if messages %}
+            {% for message in messages %}
+                 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Inside</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                
+                <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Welcome, {{user.username}}</a>
+                </li>
+        
+                {% else %}
+        
+                <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+                </li>
+        
+                {% endif %}
+            </ul>
+            </div>
+        </nav>
     </header>
+    {% if user.is_authenticated %}
     <a href="/create">Neuen Eintrag reinfetzen hier</a> <br>
-    <a href="/login">Hier gehts zum Login</a>
+    <!--<a href="/login">Hier gehts zum Login</a>-->
     {% for post in posts %}
         <article>
             <h2><a href="">{{ post.title }}</a></h2>
@@ -23,6 +53,7 @@
             <time>published: {{ post.published_date }}</time>
         </article>
     {% endfor %}
+    {% endif %}
 
 
 </body>

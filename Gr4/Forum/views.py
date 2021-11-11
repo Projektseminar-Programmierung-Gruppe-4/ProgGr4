@@ -6,7 +6,7 @@ from .forms import PostForm, UserForm
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import UserForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
@@ -42,14 +42,14 @@ def register_user(request):
     form = UserForm()
     return render(request, 'Forum/register.html', {'register_form': form})
 
-def login(request):
+def login_user(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data = request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username = username, password=password)
-            print("user: " + user)
+            print("user: " + str(user))
             if user is not None:
                 login(request, user)
                 messages.info(request, f"Servus und Willkommen: {username}!")
@@ -61,3 +61,8 @@ def login(request):
             messages.error(request, "Falscher Username oder Passwort du Holzkopf")
     form = AuthenticationForm()
     return render(request, 'Forum/login.html', {'login_form': form})
+
+def logout_user(request):
+    logout(request)
+    messages.info(request, "Verpiss dich!")
+    return redirect('overview')
