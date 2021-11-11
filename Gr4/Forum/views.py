@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 from django.http import HttpResponse
 from Forum.models import Post
@@ -5,7 +6,7 @@ from .forms import PostForm, UserForm
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import UserForm
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 # Create your views here.
@@ -40,3 +41,23 @@ def register_user(request):
 
     form = UserForm()
     return render(request, 'Forum/register.html', {'register_form': form})
+
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data = request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username = username, password=password)
+            print("user: " + user)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"Servus und Willkommen: {username}!")
+                print("successfull login")
+                return redirect('overview')
+            else:
+                messages.error(request, "Falscher Username oder Passwort du Holzkopf")
+        else:
+            messages.error(request, "Falscher Username oder Passwort du Holzkopf")
+    form = AuthenticationForm()
+    return render(request, 'Forum/login.html', {'login_form': form})
