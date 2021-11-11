@@ -1,0 +1,36 @@
+h1 a, h2  {
+    color: #4eac23;
+    padding: 10px 120px;
+    
+}
+
+
+.register-form{
+
+    padding: 10px 120px;
+  
+
+}
+
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 10px 120px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+
+button {
+    background-color: blue;
+    color:white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+
+
