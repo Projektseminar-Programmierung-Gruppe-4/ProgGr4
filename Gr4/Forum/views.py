@@ -35,9 +35,9 @@ def register_user(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Du bist Registriert du Holzkopf")
+            messages.success(request, "Registrierung erfolgreich")
             return redirect('overview')
-        messages.error(request, "Hah du bist zu dumm zu Scheißen!")
+        messages.error(request, "Bitte überprüfe deine Eingaben!")
 
     form = UserForm()
     return render(request, 'Forum/register.html', {'register_form': form})
@@ -56,13 +56,13 @@ def login_user(request):
                 print("successfull login")
                 return redirect('overview')
             else:
-                messages.error(request, "Falscher Username oder Passwort du Holzkopf")
+                messages.error(request, "Falscher Username oder Passwort")
         else:
-            messages.error(request, "Falscher Username oder Passwort du Holzkopf")
+            messages.error(request, "Falscher Username oder Passwort")
     form = AuthenticationForm()
     return render(request, 'Forum/login.html', {'login_form': form})
 
 def logout_user(request):
     logout(request)
-    messages.info(request, "Verpiss dich!")
+    messages.info(request, "Auf Wiedersehen!")
     return redirect('overview')

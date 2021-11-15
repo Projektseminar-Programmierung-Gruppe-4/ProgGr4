@@ -20,6 +20,7 @@
     {% if user.is_authenticated %}
     <a class="add-post" href="/create">Eintrag erstellen</a> <br>
     <!--<a href="/login">Hier gehts zum Login</a>-->
+    {% endif %}
     {% for post in posts %}
         <div class="entrys" id="entrys">
             <h2><a href="">{{ post.title }}</a></h2>
@@ -29,9 +30,6 @@
         </div>
     {% endfor %}
 
-    {% else %}
-        <h1>You have to Login First to see the Entrys</h1>
-    {% endif %}
 
 
 </body>

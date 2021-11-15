@@ -17,11 +17,11 @@
                 {% endfor %}
             {% endif %}
         </header>
-        <h2>Registration</h2>
+        <h2>Registrierung</h2>
         <form method="POST" class="register-form">
             {% csrf_token %}
             {{ register_form.as_p }}
-            <button type="submit" class="save btn btn-default">Save</button>
+            <button type="submit" class="save btn btn-default">Speichern</button>
         </form>
     </body>
 </html>
