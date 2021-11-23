@@ -4,6 +4,7 @@ from django.utils import timezone
 
 # Create your models here.
 
+#Klasse Post erstellt neue Tabelle in der Datenbank für die Forumbeiträge
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     #categorie = models.ForeignKey()

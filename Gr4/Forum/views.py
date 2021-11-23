@@ -32,12 +32,13 @@ def create_post(request):
 def register_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
+        print(form.is_valid())
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, "Registrierung erfolgreich")
             return redirect('overview')
-        messages.error(request, "Bitte überprüfe deine Eingaben!")
+        messages.warning(request, "Bitte überprüfe deine Eingaben!")
 
     form = UserForm()
     return render(request, 'Forum/register.html', {'register_form': form})
@@ -66,3 +67,4 @@ def logout_user(request):
     logout(request)
     messages.info(request, "Auf Wiedersehen!")
     return redirect('overview')
+ 
