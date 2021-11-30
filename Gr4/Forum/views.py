@@ -1,19 +1,46 @@
+from django.conf.urls import url
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 from django.http import HttpResponse
 from Forum.models import Post
-from .forms import PostForm, UserForm
+from Forum.models import Comment
+from .forms import CommentForm, PostForm, UserForm
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import UserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.shortcuts import render, get_object_or_404
+from django.views.generic.edit import UpdateView
 
 # Create your views here.
 
 def overview(request):
     posts = Post.objects.all()
     return render(request, 'Forum/base.html', {'posts': posts})
+
+#Views für eine Detailseite, welche einen Post mit seinen dazugehörigen Kommentaren anzeigt 
+#und Kommentare hinzufügen lässt
+#Eingangsparameter Anfrage und pk des posts
+def detail(request, pk):
+    #get post mit pk = request pk
+    post = get_object_or_404(Post, pk=pk)
+    #get alle comments mit fk = post-pk
+    comments = post.comments.filter(post_id = pk)
+    #speichern eines Kommentars, wenn Kommentarfeld genutzt wird (request.method = Post)
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.author = request.user
+            comment.voteCount = 0
+            comment.post_id = pk
+            comment.save()
+            return redirect('overview')
+    #sonst CommentForm() nur anzeigens
+    else:
+        comment_form = CommentForm()
+    return render(request, 'Forum/detail.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
 
 def create_post(request):
     if request.method == "POST":
@@ -29,6 +56,79 @@ def create_post(request):
         form = PostForm()
     return render(request, 'Forum/create.html', {'form': form})
 
+def update_post(request, pk):
+    post = Post.objects.get(pk=pk)
+    url = '/post/' + str(post.id)
+
+    form = CommentForm(request.POST or None, instance=post)
+
+    if form.is_valid():
+        form.save()
+        return redirect(url)
+    
+    return render(request, 'Forum/updatePost.html', {'form': form})
+
+""" class PostUpdateView(UpdateView):
+    # specify the model you want to use
+    model = Post
+  
+    # specify the fields
+    fields = [
+        "title",
+        "text"
+    ]
+    template_name = 'Forum/updatePost.html'
+  
+    # can specify success url
+    # url to redirect after successfully
+    # updating details
+    success_url ="/" """
+
+def delete_post(request, pk):
+    post = Post.objects.get(pk=pk)
+    post.delete()
+    return redirect('overview')
+
+
+# Funktionen für Kommentare (update,delete,vote) --> müssen noch geschrieben werden
+def update_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    post = comment.post_id
+    url = '/post/' + str(post)
+    form = CommentForm(request.POST or None, instance=comment)
+
+    if form.is_valid():
+        form.save()
+        return redirect(url)
+    
+    return render(request, 'Forum/updateComment.html', {'form': form})
+
+def delete_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    post = comment.post_id
+    url = '/post/' + str(post)
+
+    comment.delete()
+    return redirect(url)
+
+def like_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.voteCount += 1
+    comment.save()
+
+    post = comment.post_id
+    url = '/post/' + str(post)
+    return redirect(url)
+
+def dislike_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.voteCount -= 1
+    comment.save()
+
+    post = comment.post_id
+    url = '/post/' + str(post)
+    return redirect(url)
+
 def register_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
@@ -38,8 +138,7 @@ def register_user(request):
             login(request, user)
             messages.success(request, "Registrierung erfolgreich")
             return redirect('overview')
-        messages.warning(request, "Bitte überprüfe deine Eingaben!")
-
+        messages.warning(request, "Achtung falsche Eingabe")
     form = UserForm()
     return render(request, 'Forum/register.html', {'register_form': form})
 
@@ -67,4 +166,3 @@ def logout_user(request):
     logout(request)
     messages.info(request, "Auf Wiedersehen!")
     return redirect('overview')
- 

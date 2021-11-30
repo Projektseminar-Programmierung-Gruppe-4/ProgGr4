@@ -1,5 +1,6 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.db import models
-from django.conf import settings
+from django.conf import LazySettings, settings
 from django.utils import timezone
 
 # Create your models here.
@@ -21,3 +22,25 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name="comments")
+
+    text = models.TextField()
+    voteCount = models.IntegerField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+
+class Votes(models.Model):
+    comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="vote")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    voteCount = models.IntegerField()
+    like = models.BooleanField()
+    dislike = models.BooleanField()
+
+    def __str__(self):
+        return self.voteCount

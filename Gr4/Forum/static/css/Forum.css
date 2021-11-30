@@ -27,3 +27,20 @@ a.add-post{
     margin-right: 5%;
     color: #000000;
 }
+
+#comments{
+    margin: 0 auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    margin-right: 1%;
+    width: auto;
+    height: auto;
+    padding: 12px;
+    border: 1px solid #000000;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    color: #000000;
+}
+
+.edit-comment{
+    float: right;
+}
