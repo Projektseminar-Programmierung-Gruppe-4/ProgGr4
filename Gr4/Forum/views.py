@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from Forum.models import Post
 from Forum.models import Comment
+from Forum.models import Votes
 from .forms import CommentForm, PostForm, UserForm
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -111,19 +112,23 @@ def delete_comment(request, pk):
     comment.delete()
     return redirect(url)
 
-def like_comment(request, pk):
+#in Bearbeitung
+def vote_comment(request, pk, vote):
     comment = Comment.objects.get(pk=pk)
-    comment.voteCount += 1
-    comment.save()
+    reaction = vote
+    try:
+        vote = Votes.objects.get(comment_id = pk, author_id = request.user)
+    except:
+        vote = None
 
-    post = comment.post_id
-    url = '/post/' + str(post)
-    return redirect(url)
+    if vote is None:
+        vote.author = request.user
+        vote.comment = pk
+        vote.safe()
+    
 
-def dislike_comment(request, pk):
-    comment = Comment.objects.get(pk=pk)
-    comment.voteCount -= 1
-    comment.save()
+
+    
 
     post = comment.post_id
     url = '/post/' + str(post)

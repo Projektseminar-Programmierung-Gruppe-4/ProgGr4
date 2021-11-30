@@ -38,9 +38,8 @@ class Votes(models.Model):
     comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="vote")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    voteCount = models.IntegerField()
     like = models.BooleanField()
     dislike = models.BooleanField()
 
     def __str__(self):
-        return self.voteCount
+        return self.id
