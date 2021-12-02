@@ -116,22 +116,68 @@ def delete_comment(request, pk):
 def vote_comment(request, pk, vote):
     comment = Comment.objects.get(pk=pk)
     reaction = vote
+    #post um url für return render zu generieren
+    post = comment.post_id
+    url = '/post/' + str(post)
     try:
         vote = Votes.objects.get(comment_id = pk, author_id = request.user)
     except:
         vote = None
 
     if vote is None:
-        vote.author = request.user
-        vote.comment = pk
-        vote.safe()
+        Votes.objects.create(author_id = request.user.id, comment_id = pk, like = False, dislike = False)
     
-
-
+    vote = Votes.objects.get(comment_id = pk, author_id = request.user)
     
+    #überprüfen ob like Button, den Request ausgelöst hat
+    if reaction == 'like':
+        #überprüfen ob Like-Button schon aktiv ist
+        if vote.like == True:
+            vote.like = False
+            comment.voteCount -= 1
+            vote.save()
+            comment.save()
+            return redirect(url)
+        #überprüfen ob dislike button aktiv ist
+        elif vote.dislike == True:
+            vote.dislike = False
+            vote.like = True
+            comment.voteCount += 2
+            vote.save()
+            comment.save()
+            return redirect(url)
+        #falls noch kein Button aktiv ist
+        else:
+            vote.like = True
+            comment.voteCount += 1
+            vote.save()
+            comment.save()
+            return redirect(url)
+    
+    if reaction == 'dislike':
+        if vote.dislike == True:
+            vote.dislike = False
+            comment.voteCount += 1
+            vote.save()
+            comment.save()
+            return redirect(url)
 
-    post = comment.post_id
-    url = '/post/' + str(post)
+        elif vote.like == True:
+            vote.like = False
+            vote.dislike = True
+            comment.voteCount -= 2
+            vote.save()
+            comment.save()
+            return redirect(url)
+
+        else:
+            vote.dislike = True
+            comment.voteCount -= 1
+            vote.save()
+            comment.save()
+            return redirect(url)
+
+
     return redirect(url)
 
 def register_user(request):
