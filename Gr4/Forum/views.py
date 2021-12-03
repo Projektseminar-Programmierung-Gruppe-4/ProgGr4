@@ -69,22 +69,6 @@ def update_post(request, pk):
     
     return render(request, 'Forum/updatePost.html', {'form': form})
 
-""" class PostUpdateView(UpdateView):
-    # specify the model you want to use
-    model = Post
-  
-    # specify the fields
-    fields = [
-        "title",
-        "text"
-    ]
-    template_name = 'Forum/updatePost.html'
-  
-    # can specify success url
-    # url to redirect after successfully
-    # updating details
-    success_url ="/" """
-
 def delete_post(request, pk):
     post = Post.objects.get(pk=pk)
     post.delete()
