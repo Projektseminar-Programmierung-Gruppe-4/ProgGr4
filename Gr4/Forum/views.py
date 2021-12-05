@@ -27,7 +27,7 @@ def detail(request, pk):
     #get post mit pk = request pk
     post = get_object_or_404(Post, pk=pk)
     #get alle comments mit fk = post-pk
-    comments = post.comments.filter(post_id = pk)
+    comments = post.comments.filter(post_id = pk).order_by('-voteCount')
     #speichern eines Kommentars, wenn Kommentarfeld genutzt wird (request.method = Post)
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
@@ -167,14 +167,15 @@ def vote_comment(request, pk, vote):
 def register_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
-        print(form.is_valid())
+        #print(form.is_valid())
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, "Registrierung erfolgreich")
             return redirect('overview')
         messages.warning(request, "Achtung falsche Eingabe")
-    form = UserForm()
+    else:
+        form = UserForm()
     return render(request, 'Forum/register.html', {'register_form': form})
 
 def login_user(request):
@@ -184,7 +185,7 @@ def login_user(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username = username, password=password)
-            print("user: " + str(user))
+            #print("user: " + str(user))
             if user is not None:
                 login(request, user)
                 messages.info(request, f"Servus und Willkommen: {username}!")
@@ -194,7 +195,8 @@ def login_user(request):
                 messages.error(request, "Falscher Username oder Passwort")
         else:
             messages.error(request, "Falscher Username oder Passwort")
-    form = AuthenticationForm()
+    else:
+        form = AuthenticationForm()
     return render(request, 'Forum/login.html', {'login_form': form})
 
 def logout_user(request):

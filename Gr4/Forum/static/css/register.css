@@ -1,21 +1,21 @@
-h1 a, h1  {
+h1 a, h1, h2  {
     color: #000000;
-    padding: 10px 120px;
+    padding: 10px 500px;
     
 }
 
+.register-form,.login-form,.no-account,.post-form,.update-form{
 
-.register-form{
-
-    padding: 10px 120px;
+    padding: 10px 500px;
   
 
 }
 
 
-input[type=text], input[type=password] {
+
+input[type=text], input[type=password], input[type= email], textarea {
     width: 100%;
-    padding: 10px 120px;
+    padding: 10px 10px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
@@ -24,7 +24,7 @@ input[type=text], input[type=password] {
 
 
 button {
-    background-color: blue;
+    background-color: rgba(0, 4, 255, 0.212);
     color:white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -33,4 +33,14 @@ button {
     width: 100%;
   }
 
+.errorlist{
+    list-style-type: none;
+    color:red;
+    margin: 0;
+    padding: 0;
+  
+}
 
+body{
+  margin: 0;
+}

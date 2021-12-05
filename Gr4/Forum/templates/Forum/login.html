@@ -1,26 +1,29 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Inside</title>
-        <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <title>Insite</title>
+        <link rel="stylesheet" href="{% static 'css/register.css' %}">
     </head>
     <body>
-        <header class="page-header">
+        <header>
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
+
+            {% include 'Forum/includes/navbar.html' %}
         </header>
         <!--Login--> 
         <div class="container py-5">
             <h1>Login</h1>
-            <form method="POST">
-            {% csrf_token %}
-            {{ login_form }}
-            <button class="btn btn-primary" type="submit">Login</button>
+            <form method="POST" class="login-form">
+                {% csrf_token %}
+                {{ login_form }}
+                <button class="btn btn-primary" type="submit">Login</button>
             </form>
-            <p class="text-center">Noch keinen Account? <a href="/register">Jetzt registrieren!</a>.</p>
+            <p class="no-account">Noch keinen Account? <a href="/register">Jetzt registrieren!</a>.</p>
         </div>
     </body>
 </html>

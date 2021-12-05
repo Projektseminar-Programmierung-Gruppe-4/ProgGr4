@@ -38,8 +38,10 @@
         <div class="comments" id="comments">
             <p>{{comment.text}}</p>
             <p><b>{{comment.author}} on {{comment.created_date}}</b></p>
-            <p>{{comment.voteCount}}</p>
-            
+            <p>Votecount: {{comment.voteCount}}</p>
+
+
+            {% if user.is_authenticated %}
             {%if user == comment.author%}
             <div class="edit-comment">
                 <a href="{% url 'update-comment' pk=comment.pk %}" class = "btn btn-outline-secondary btn-sm">
@@ -80,6 +82,7 @@
                     {%endif%}
                 </a>
             </div>
+            {%endif%}
 
         </div>
         {%endfor%}
@@ -87,10 +90,15 @@
         <br>
 
         {% if user.is_authenticated %}
-        <div class="input-group mb-3">
+        <div class="post-comment">
             <form method="POST" class="post-form">
                 {% csrf_token %}
-                {{ comment_form.as_p }}
+                <!--{{ comment_form.as_p }}-->
+                {%for field in comment_form%}
+                    <div>
+                        <b>Kommentar:</b> <br>{{field}} {{field.errors}}
+                    </div>
+                {%endfor%}
                 <button type="submit" class=" btn btn-outline-success">Speichern</button>
             </form>
         </div>
