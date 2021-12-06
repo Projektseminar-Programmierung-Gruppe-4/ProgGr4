@@ -34,37 +34,36 @@ class UserForm(UserCreationForm):
 
         #extract username, name and last name
         firstname = self.cleaned_data.get('first_name')
+        #checkFirstname = re.match("[a-zA-Z]", firstname)
 
-        checkFirstname = re.search("[a-zA-Z]*", firstname)
-
-        if checkFirstname != True:
-            print('Vornamefehler')
+        if not re.match("^[a-zA-Z]*$", firstname):
             raise forms.ValidationError("Bitte überprüfe deine Eingabe beim Vornamen")
 
-        return self.cleaned_data
+        return firstname
 
     def clean_last_name(self):
         #fetching data from from
         #super(UserForm, self).clean()
 
         lastname = self.cleaned_data.get('last_name')
+        #checkLastname = re.match("[a-zA-Z]", lastname)
 
-        checkLastname = re.search("[a-zA-Z]*", lastname)
+        if not re.match("^[a-zA-Z]*$", lastname):
+            raise forms.ValidationError("Bitte überprüfe deine Eingabe beim Nachnamen")
 
-        if checkLastname != True:
-            print('Nachnamenfehler')
-            raise ValidationError("Bitte überprüfe deine Eingabe beim Nachnamen")
+        return lastname
 
-        return self.cleaned_data
-    
     def clean_password2(self):
-        password = self.cleaned_data.get('password')
+        password = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
+        print(password)
+        print(password2)
 
         if password != password2:
             raise forms.ValidationError("Die eingegebenen Passwörter stimmen nicht überein")
-            
-        return super().clean_password2()
+
+        return password2
+
 
 
 class CommentForm(forms.ModelForm):
