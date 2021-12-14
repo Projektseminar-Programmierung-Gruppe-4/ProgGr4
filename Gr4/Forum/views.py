@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from Forum.models import Post
 from Forum.models import Comment
 from Forum.models import Votes
+from Forum.models import Postvotes
 from .forms import CommentForm, PostForm, UserForm
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -16,7 +17,8 @@ from django.views.generic.edit import UpdateView
 
 # Create your views here.
 
-def overview(request):
+#eventuelle Filterung hier einbauen
+def overview(request, filter):
     posts = Post.objects.all()
     return render(request, 'Forum/base.html', {'posts': posts})
 
@@ -26,6 +28,7 @@ def overview(request):
 def detail(request, pk):
     #get post mit pk = request pk
     post = get_object_or_404(Post, pk=pk)
+    url = "/post/" + pk
     #get alle comments mit fk = post-pk
     comments = post.comments.filter(post_id = pk).order_by('-voteCount')
     #speichern eines Kommentars, wenn Kommentarfeld genutzt wird (request.method = Post)
@@ -37,7 +40,7 @@ def detail(request, pk):
             comment.voteCount = 0
             comment.post_id = pk
             comment.save()
-            return redirect('overview')
+            return redirect(url)
     #sonst CommentForm() nur anzeigens
     else:
         comment_form = CommentForm()
@@ -52,6 +55,7 @@ def create_post(request):
             post.published_date = timezone.now()
             post.voteCount = 0
             post.save()
+            messages.success(request, "Eintrag erfolgreich angelegt")
             return redirect('overview')
     else:
         form = PostForm()
@@ -62,7 +66,7 @@ def update_post(request, pk):
     url = '/post/' + str(post.id)
 
     form = CommentForm(request.POST or None, instance=post)
-
+    
     if form.is_valid():
         form.save()
         return redirect(url)
@@ -73,6 +77,72 @@ def delete_post(request, pk):
     post = Post.objects.get(pk=pk)
     post.delete()
     return redirect('overview')
+
+def vote_post(request, pk, vote):
+    post = Post.objects.get(pk = pk)
+    reaction = vote
+    url = '/post/' + pk
+
+    try:
+        vote = Postvotes.objects.get(post_id = pk, author_id = request.user)
+    except:
+        vote = None
+
+    if vote is None:
+        Postvotes.objects.create(author_id = request.user.id, post_id = pk, like = False, dislike = False)
+    
+    vote = Postvotes.objects.get(post_id = pk, author_id = request.user)
+
+    #überprüfen ob like Button, den Request ausgelöst hat
+    if reaction == 'like':
+        #überprüfen ob Like-Button schon aktiv ist
+        if vote.like == True:
+            vote.like = False
+            post.voteCount -= 1
+            vote.save()
+            post.save()
+            return redirect(url)
+        #überprüfen ob dislike button aktiv ist
+        elif vote.dislike == True:
+            vote.dislike = False
+            vote.like = True
+            post.voteCount += 2
+            vote.save()
+            post.save()
+            return redirect(url)
+        #falls noch kein Button aktiv ist
+        else:
+            vote.like = True
+            post.voteCount += 1
+            vote.save()
+            post.save()
+            return redirect(url)
+    
+    if reaction == 'dislike':
+        if vote.dislike == True:
+            vote.dislike = False
+            post.voteCount += 1
+            vote.save()
+            post.save()
+            return redirect(url)
+
+        elif vote.like == True:
+            vote.like = False
+            vote.dislike = True
+            post.voteCount -= 2
+            vote.save()
+            post.save()
+            return redirect(url)
+
+        else:
+            vote.dislike = True
+            post.voteCount -= 1
+            vote.save()
+            post.save()
+            return redirect(url)
+    
+
+    return redirect(url)
 
 
 # Funktionen für Kommentare (update,delete,vote) --> müssen noch geschrieben werden
@@ -96,7 +166,7 @@ def delete_comment(request, pk):
     comment.delete()
     return redirect(url)
 
-#in Bearbeitung
+
 def vote_comment(request, pk, vote):
     comment = Comment.objects.get(pk=pk)
     reaction = vote

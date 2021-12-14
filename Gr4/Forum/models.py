@@ -44,5 +44,15 @@ class Votes(models.Model):
     def __str__(self):
         return self.id
 
+class Postvotes(models.Model):
+    post = models.ForeignKey(Post,on_delete = models.CASCADE, related_name="postvote")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    like = models.BooleanField()
+    dislike = models.BooleanField()
+
+    def __str__(self):
+        return self.id
+
 """ class Division():
     name = model. """

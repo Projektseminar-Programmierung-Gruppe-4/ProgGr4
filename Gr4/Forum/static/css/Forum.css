@@ -42,7 +42,7 @@ div.Testdiv{
     color: #000000;
 }
 
-.edit-comment{
+.edit-comment,.edit-post{
     float: right;
 }
 
