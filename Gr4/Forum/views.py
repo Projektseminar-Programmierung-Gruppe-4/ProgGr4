@@ -6,7 +6,7 @@ from Forum.models import Post
 from Forum.models import Comment
 from Forum.models import Votes
 from Forum.models import Postvotes
-from .forms import CommentForm, PostForm, UserForm
+from .forms import CommentForm, EmployeeForm, PostForm, UserForm
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import UserForm
@@ -18,7 +18,7 @@ from django.views.generic.edit import UpdateView
 # Create your views here.
 
 #eventuelle Filterung hier einbauen
-def overview(request, filter):
+def overview(request):
     posts = Post.objects.all()
     return render(request, 'Forum/base.html', {'posts': posts})
 
@@ -237,16 +237,23 @@ def vote_comment(request, pk, vote):
 def register_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
+        employee_form = EmployeeForm(request.POST)
         #print(form.is_valid())
-        if form.is_valid():
+        if form.is_valid() and employee_form.is_valid():
             user = form.save()
+            
+            employee = employee_form.save(commit=False)
+            employee.user = user
+            employee.save()
+
             login(request, user)
             messages.success(request, "Registrierung erfolgreich")
             return redirect('overview')
         messages.warning(request, "Achtung falsche Eingabe")
     else:
         form = UserForm()
-    return render(request, 'Forum/register.html', {'register_form': form})
+        employee_form = EmployeeForm()
+    return render(request, 'Forum/register.html', {'register_form': form, 'employee_form': employee_form})
 
 def login_user(request):
     if request.method == 'POST':

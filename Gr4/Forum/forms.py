@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Comment, Post
+from django.db.models import fields
+from .models import Comment, Employee, Post
 import re
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 class PostForm(forms.ModelForm):
 
@@ -65,7 +67,15 @@ class UserForm(UserCreationForm):
         return password2
 
 
+class EmployeeForm(forms.ModelForm):
 
+    '''birthdate = forms.DateField(
+        widget=forms.DateInput(format='%d%m%Y'),
+        input_formats=['%d%m%Y']
+    )'''
+    class Meta:
+        model= Employee
+        fields = ("birthdate", "department")
 class CommentForm(forms.ModelForm):
 
     class Meta:

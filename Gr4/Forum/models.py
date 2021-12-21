@@ -1,7 +1,10 @@
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.db import models
 from django.conf import LazySettings, settings
 from django.utils import timezone
+
+#from Forum.tests.tests import User
 
 # Create your models here.
 
@@ -54,5 +57,16 @@ class Postvotes(models.Model):
     def __str__(self):
         return self.id
 
-""" class Division():
-    name = model. """
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+class Employee(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    birthdate = models.DateField()
+    department = models.ForeignKey(Department, on_delete = models.CASCADE, related_name="department")

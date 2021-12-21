@@ -29,6 +29,12 @@
                     {{field.label_tag}} {{field}} {{field.errors}}
                 </div>
             {%endfor%}
+
+            {%for field in employee_form%}
+                <div>
+                    {{field.label_tag}} {{field}} {{field.errors}}
+                </div>
+            {%endfor%}
             <button type="submit" class="save btn btn-default">Speichern</button>
         </form>
     </body>

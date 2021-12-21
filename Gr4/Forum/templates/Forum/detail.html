@@ -29,6 +29,7 @@
         <!--<p>Votecount = {{post.voteCount}}</p>-->
         <time>Veröffentlicht: {{ post.published_date }}</time>
         <p>Author: {{post.author}}</p>
+        <p>Votecount: {{post.voteCount}}</p>
         {%if user == post.author%}
         <div class = "edit-post">
             <a href="{% url 'update' pk=post.pk %}" class = "btn btn-outline-secondary btn-sm">Eintrag bearbeiten</a>
