@@ -11,7 +11,10 @@
   <div class="navbar_right">
   <a class="navbar_item" href="/"> Home </a>
   <a class="navbar_item" href="/create"> Frage stellen </a>
-  <a class="navbar_item" href="#..."> Archiv </a>
+  <a class="navbar_item" href="/archiv"> Archiv </a>
+  {%if user.is_staff == True%}
+  <a class="navbar_item" href=""> Adminpage </a>
+  {%endif%}
 </div>
 
 <div class="navbar_profil">

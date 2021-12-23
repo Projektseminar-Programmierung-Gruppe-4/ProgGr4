@@ -70,3 +70,25 @@ class Employee(models.Model):
 
     birthdate = models.DateField()
     department = models.ForeignKey(Department, on_delete = models.CASCADE, related_name="department")
+
+    def __str__(self):
+        return self.id
+
+#muss noch migriert werden
+class Postreport(models.Model):
+    post = models.ForeignKey(Post,on_delete = models.CASCADE, related_name="post")
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    report_date = models.DateTimeField(blank=True, null=True)
+    report_message = models.TextField()
+
+    def __str__(self):
+        return self.id
+
+class Commentreport(models.Model):
+    comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="comment")
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    report_date = models.DateTimeField(blank=True, null=True)
+    report_message = models.TextField()
+
+    def __str__(self):
+        return self.id

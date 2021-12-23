@@ -22,6 +22,12 @@ def overview(request):
     posts = Post.objects.all()
     return render(request, 'Forum/base.html', {'posts': posts})
 
+#Funktion für Archivseite mit allen Posts und Kommentaren des Users
+def archiv(request):
+    posts = Post.objects.filter(author = request.user)
+    comments = Comment.objects.filter(author = request.user)
+    return render(request, 'Forum/archiv.html', {'posts': posts, 'comments': comments})
+
 #Views für eine Detailseite, welche einen Post mit seinen dazugehörigen Kommentaren anzeigt 
 #und Kommentare hinzufügen lässt
 #Eingangsparameter Anfrage und pk des posts
@@ -241,7 +247,7 @@ def register_user(request):
         #print(form.is_valid())
         if form.is_valid() and employee_form.is_valid():
             user = form.save()
-            
+
             employee = employee_form.save(commit=False)
             employee.user = user
             employee.save()

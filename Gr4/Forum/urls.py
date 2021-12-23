@@ -16,5 +16,6 @@ urlpatterns = [
     path('post/<pk>/<vote>', views.vote_post, name='vote-post'),
     path('comment/<pk>/update', views.update_comment, name='update-comment'),
     path('comment/<pk>/delete', views.delete_comment, name='delete-comment'),
-    path('comment/<pk>/<vote>', views.vote_comment, name='vote-comment')
+    path('comment/<pk>/<vote>', views.vote_comment, name='vote-comment'),
+    path('archiv', views.archiv, name = 'archiv'),
 ]
