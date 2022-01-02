@@ -1,12 +1,16 @@
 from django.conf.urls import url
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from Forum.models import Post
 from Forum.models import Comment
 from Forum.models import Votes
 from Forum.models import Postvotes
-from .forms import CommentForm, EmployeeForm, PostForm, UserForm
+from Forum.models import Postreport
+from Forum.models import Commentreport
+from Forum.models import Department
+from .forms import CommentForm, EmployeeForm, PostForm, UserForm, ReportPostForm,ReportCommentForm, DepartmentForm
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import UserForm
@@ -27,6 +31,18 @@ def archiv(request):
     posts = Post.objects.filter(author = request.user)
     comments = Comment.objects.filter(author = request.user)
     return render(request, 'Forum/archiv.html', {'posts': posts, 'comments': comments})
+
+def adminpage(request):
+    return render (request, 'Forum/adminpage.html')
+
+def reports(request):
+    reported_posts = Postreport.objects.all()
+    reported_comments = Commentreport.objects.all()
+    return render(request, 'Forum/reports.html', {'posts': reported_posts, 'comments': reported_comments})
+
+def permission_overview(request):
+    users = User.objects.all().order_by('-is_staff')
+    return render(request, 'Forum/permissions.html', {'users': users})
 
 #Views für eine Detailseite, welche einen Post mit seinen dazugehörigen Kommentaren anzeigt 
 #und Kommentare hinzufügen lässt
@@ -66,6 +82,24 @@ def create_post(request):
     else:
         form = PostForm()
     return render(request, 'Forum/create.html', {'form': form})
+
+def report_post(request, pk):
+    entry = Post.objects.get(pk=pk)
+    url = '/post/' + str(pk)
+    if request.method == "POST":
+        form = ReportPostForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.report_date = timezone.now()
+            report.post_id = pk
+            report.save()
+            messages.success(request, "Eintrag erfolgreich gemeldet")
+            return redirect(url)
+    else:
+        form = ReportPostForm()
+    form = ReportPostForm()
+    return render(request, 'Forum/reportPost.html', {'form': form, 'entry': entry})
 
 def update_post(request, pk):
     post = Post.objects.get(pk=pk)
@@ -172,6 +206,24 @@ def delete_comment(request, pk):
     comment.delete()
     return redirect(url)
 
+def report_comment(request, pk):
+    entry = Comment.objects.get(pk=pk)
+    post = entry.post_id
+    url = '/post/' + str(post)
+    if request.method == "POST":
+        form = ReportCommentForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.report_date = timezone.now()
+            report.comment_id = pk
+            report.save()
+            messages.success(request, "Kommentar wurde gemeldet")
+            return redirect(url)
+    else:
+        form = ReportCommentForm()
+    return render(request, 'Forum/reportPost.html', {'form': form, 'entry': entry})
+
 
 def vote_comment(request, pk, vote):
     comment = Comment.objects.get(pk=pk)
@@ -240,6 +292,55 @@ def vote_comment(request, pk, vote):
 
     return redirect(url)
 
+
+def release_report(request, pk, type):
+    if type == 'comment':
+        comment = Commentreport.objects.filter(comment_id = pk)
+        comment.delete()
+    else:
+        post = Postreport.objects.filter(post_id = pk)
+        post.delete()
+    return redirect('reports')
+
+def delete_report(request,pk,type):
+    if type == 'comment':
+        comment = Comment.objects.get(pk = pk)
+        comment.delete()
+    else:
+        post = Post.objects.get(pk = pk)
+        post.delete()
+    return redirect('reports')
+
+def add_department(request):
+    departments = Department.objects.all()
+    if request.method == "POST":
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            department = form.save(commit=False)
+            department.save()
+            return redirect('departments')
+    else:
+        form = DepartmentForm()
+    return render(request, 'Forum/departments.html', {'form': form, 'departments': departments})
+
+def delete_department(request, pk):
+    department = Department.objects.get(pk=pk)
+    department.delete()
+    return redirect('departments')
+
+def set_permission(request, pk):
+    user = User.objects.get(pk = pk)
+    user.is_staff = True
+    user.save()
+    return redirect('permissions')
+
+def remove_permission(request, pk):
+    user = User.objects.get(pk = pk)   
+    user.is_staff = False
+    user.save()
+    return redirect('permissions')
+
+#Functions for registration, login and Logout of users
 def register_user(request):
     if request.method == "POST":
         form = UserForm(request.POST)

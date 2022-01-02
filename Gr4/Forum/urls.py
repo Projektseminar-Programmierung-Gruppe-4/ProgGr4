@@ -18,4 +18,15 @@ urlpatterns = [
     path('comment/<pk>/delete', views.delete_comment, name='delete-comment'),
     path('comment/<pk>/<vote>', views.vote_comment, name='vote-comment'),
     path('archiv', views.archiv, name = 'archiv'),
+    path('post/<pk>/report/', views.report_post, name = 'report-post'),
+    path('comment/<pk>/report/', views.report_comment, name = 'report-comment'),
+    path('reports', views.reports, name='reports'),
+    path('reports/<pk>/<type>/release/', views.release_report, name='release-report'),
+    path('reports/<pk>/<type>/delete/', views.delete_report, name='delete-report'),
+    path('adminpage', views.adminpage, name='adminpage'),
+    path('departments', views.add_department, name='departments'),
+    path('departments/<pk>/delete/', views.delete_department, name='delete-department'),
+    path('permissions', views.permission_overview, name='permissions'),
+    path('permissions/<pk>/set', views.set_permission, name='set-permission'),
+    path('permissions/<pk>/remove', views.remove_permission, name='remove-permission')
 ]

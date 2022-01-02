@@ -24,6 +24,9 @@
     {% endif %}
     -->
     <div class="entrys" id="entrys">
+        {%if user.is_authenticated%}
+        <a href="{% url 'report-post' pk=post.pk %}" id="report" class = "btn btn-outline-danger btn-sm">Eintrag melden</a>
+        {%endif%}
         <h2>{{ post.title }}</h2>
         <p>{{ post.text|linebreaksbr }}</p>
         <!--<p>Votecount = {{post.voteCount}}</p>-->
@@ -36,7 +39,7 @@
             <a href="{% url 'delete' pk=post.pk %}" class = "btn btn-outline-danger btn-sm">Eintrag löschen</a>
         </div>
         {%endif%}
-
+        {%if user.is_authenticated%}
         <div class="post-thumbs">
             <a href="{% url 'vote-post' pk=post.pk vote='like' %}" class="btn btn-outline-secondary btn-sm">
                 {%if post.pk|post_isliked:user.id %}
@@ -62,9 +65,13 @@
                 {%endif%}
             </a>
         </div>
+        {%endif%}
 
         {%for comment in comments%}
         <div class="comments" id="comments">
+            {%if user.is_authenticated%}
+            <a href="{% url 'report-comment' pk=comment.pk %}" id="report" class = "btn btn-outline-danger btn-sm">Kommentar melden</a>
+            {%endif%}
             <p>{{comment.text}}</p>
             <p><b>{{comment.author}} on {{comment.created_date}}</b></p>
             <p>Votecount: {{comment.voteCount}}</p>

@@ -69,10 +69,10 @@ class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     birthdate = models.DateField()
-    department = models.ForeignKey(Department, on_delete = models.CASCADE, related_name="department")
+    department = models.ForeignKey(Department, on_delete = models.SET_NULL, related_name="department", null=True)
 
     def __str__(self):
-        return self.id
+        return self.user.username
 
 #muss noch migriert werden
 class Postreport(models.Model):
@@ -82,7 +82,7 @@ class Postreport(models.Model):
     report_message = models.TextField()
 
     def __str__(self):
-        return self.id
+        return self.post.title
 
 class Commentreport(models.Model):
     comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="comment")
@@ -91,4 +91,4 @@ class Commentreport(models.Model):
     report_message = models.TextField()
 
     def __str__(self):
-        return self.id
+        return self.comment.text

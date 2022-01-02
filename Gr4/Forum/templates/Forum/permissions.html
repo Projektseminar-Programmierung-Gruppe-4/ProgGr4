@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insite</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/Forum.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+    <header>
+        {% if messages %}
+            {% for message in messages %}
+                 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <!--Navbar-->
+        {% include 'Forum/includes/navbar.html' %}
+    </header>
+    <h2>Benutzer</h2>
+    {% for user in users %}
+        <div class="entrys" id="entrys">
+            {%if user.is_staff == True%}
+            <a href="{% url 'remove-permission' pk=user.pk %}" id='delete' class = "btn btn-outline-danger btn-sm">
+                <!--<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                  </svg>-->
+                Moderatorenrolle entfernen
+            </a>
+            {%else%}
+            <a href="{% url 'set-permission' pk=user.pk %}" id='delete' class = "btn btn-outline-success btn-sm">
+                <!--<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                  </svg>-->
+                Als Moderator hinzufügen
+            </a>
+            {%endif%}
+            <p>{{user.username}} | {{user.first_name}} {{user.last_name}} | Rolle: {%if user.is_staff%} Moderator {%else%} User {%endif%} </p>
+        </div>
+    {% endfor %}
+
+
+
+</body>
+</html>

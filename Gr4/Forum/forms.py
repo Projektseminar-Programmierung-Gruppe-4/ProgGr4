@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db.models import fields
-from .models import Comment, Employee, Post
+from .models import Comment, Department, Employee, Post, Postreport, Commentreport
 import re
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -69,10 +69,6 @@ class UserForm(UserCreationForm):
 
 class EmployeeForm(forms.ModelForm):
 
-    '''birthdate = forms.DateField(
-        widget=forms.DateInput(format='%d%m%Y'),
-        input_formats=['%d%m%Y']
-    )'''
     class Meta:
         model= Employee
         fields = ("birthdate", "department")
@@ -81,3 +77,32 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ("text",)
+
+class ReportPostForm(forms.ModelForm):
+
+    class Meta:
+        model = Postreport
+        fields = ("report_message",)
+
+
+class ReportCommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Commentreport
+        fields = ("report_message",)
+
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Department
+        fields = ("name",)
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+
+        isTaken = Department.objects.filter(name__icontains = name).exists()
+        print(isTaken)
+        if isTaken == True:
+            raise forms.ValidationError("Abteilung ist bereits angelegt")
+
+        return name
+
