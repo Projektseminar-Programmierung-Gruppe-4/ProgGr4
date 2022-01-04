@@ -58,8 +58,6 @@ class UserForm(UserCreationForm):
     def clean_password2(self):
         password = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        print(password)
-        print(password2)
 
         if password != password2:
             raise forms.ValidationError("Die eingegebenen Passwörter stimmen nicht überein")
@@ -100,7 +98,6 @@ class DepartmentForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
 
         isTaken = Department.objects.filter(name__icontains = name).exists()
-        print(isTaken)
         if isTaken == True:
             raise forms.ValidationError("Abteilung ist bereits angelegt")
 

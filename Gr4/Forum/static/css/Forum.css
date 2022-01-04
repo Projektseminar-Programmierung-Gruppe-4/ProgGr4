@@ -14,7 +14,7 @@ div.Testdiv{
     color: aqua;
 }
 
-#entrys{
+#entrys,#filter{
     margin: 0 auto;
     margin-top: 1%;
     margin-bottom: 1%;
@@ -62,5 +62,16 @@ input[type=text], input[type=password] {
 #report, #delete{
     float: right;
 }
+
+button {
+    background-color: rgba(0, 4, 255, 0.212);
+    color:white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid grey;
+  }
 
 

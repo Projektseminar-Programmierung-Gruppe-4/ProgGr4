@@ -1,4 +1,4 @@
-from django.conf.urls import url
+#from django.conf.urls import url
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render
@@ -18,12 +18,25 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView
+from django.views.generic import ListView
+from django.db.models import Q
 
 # Create your views here.
 
 #eventuelle Filterung hier einbauen
 def overview(request):
     posts = Post.objects.all()
+    filter = request.GET.get('choicefilter')
+    search = request.GET.get('search')
+
+    if search != '' and search is not None:
+        posts = posts.filter(Q(title__icontains = search) | Q(text__icontains = search))
+    if filter != '' and filter is not None:
+        if filter == 'votecount':
+            posts = posts.order_by('-voteCount')
+        else:
+            posts = posts.order_by('-created_date')
+
     return render(request, 'Forum/base.html', {'posts': posts})
 
 #Funktion für Archivseite mit allen Posts und Kommentaren des Users
