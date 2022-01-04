@@ -10,25 +10,24 @@ from django.urls import reverse
 # Create your tests here.
 from django.contrib.auth import get_user_model
 from Forum.models import Post
+from Forum.models import Comment
 
+User = get_user_model
 class URLTests(TestCase):
     def test_homepage(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
 
+class   TestModelComment(TestCase):
+    def test_comment(self):
+        #author = User.objects.create(author="Max")
+        post = Comment.objects.create(text="hahahaha")
 
-class VIEWTests(TestCase):
-        
-    def test_Forum_view(self):
-        
-        url = reverse("Forum.urls")
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
-        
+        #self.assertEqual(User(author), "Max")
+        self.assertEqual(str(post), "Das ist ein Text")
 
 
-User = get_user_model
 class UserTest(TestCase):
     def setUp(self):
         user_a = User(username ='Tim',email='test@gmx.de')
@@ -43,11 +42,12 @@ class UserTest(TestCase):
         self.assertEqual(user_count,1) 
 
 
-
 class TestForumModel(TestCase):
 
     def test_model(self):
         title = Post.objects.create(title="Test Title")
-        text = Post.objects.create(text="Test text ")
+        #text = Post.objects.create(text="Test text ")
 
         self.assertEqual(str(title), "Test Title")
+
+

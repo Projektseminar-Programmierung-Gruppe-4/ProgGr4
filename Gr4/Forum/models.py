@@ -10,11 +10,11 @@ from django.utils import timezone
 
 #Klasse Post erstellt neue Tabelle in der Datenbank für die Forumbeiträge
 class Post(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     #categorie = models.ForeignKey()
     title = models.CharField(max_length=200)
     text = models.TextField()
-    voteCount = models.IntegerField()
+    voteCount = models.IntegerField(blank=True,null=True)
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
 
@@ -27,11 +27,11 @@ class Post(models.Model):
         return self.title
 
 class Comment(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name="comments")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name="comments", blank=True, null=True)
 
     text = models.TextField()
-    voteCount = models.IntegerField()
+    voteCount = models.IntegerField(null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
