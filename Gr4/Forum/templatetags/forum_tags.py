@@ -4,7 +4,7 @@ from Forum.models import Postvotes
 
 register = template.Library()
 
-from Forum.models import Votes, Comment
+from Forum.models import Votes, Comment,Subcommentvotes
 
 @register.filter(name='comment_isliked')
 def comment_isliked(pk, user):
@@ -53,6 +53,33 @@ def post_isdisliked(pk, user):
     user_id= user
     try:
         vote = Postvotes.objects.get(post_id = pk, author_id = user_id)
+    except:
+        return False
+
+    if vote.dislike == True:
+        return True
+    else:
+        return False
+
+@register.filter(name='subcomment_isliked')
+def subcomment_isliked(pk, user):
+    #comment = Comment.objects.get(pk=pk)
+    user_id= user
+    try:
+        vote = Subcommentvotes.objects.get(subcomment_id = pk, author_id = user_id)
+    except:
+        return False
+
+    if vote.like == True:
+        return True
+    else:
+        return False
+
+@register.filter(name='subcomment_isdisliked')
+def subcomment_isdisliked(pk, user):
+    user_id= user
+    try:
+        vote = Subcommentvotes.objects.get(subcomment_id = pk, author_id = user_id)
     except:
         return False
 

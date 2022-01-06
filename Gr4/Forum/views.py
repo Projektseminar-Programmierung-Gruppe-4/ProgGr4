@@ -10,7 +10,10 @@ from Forum.models import Postvotes
 from Forum.models import Postreport
 from Forum.models import Commentreport
 from Forum.models import Department
-from .forms import CommentForm, EmployeeForm, PostForm, UserForm, ReportPostForm,ReportCommentForm, DepartmentForm
+from Forum.models import Subcomment
+from Forum.models import Subcommentvotes
+from Forum.models import Subcommentreport
+from .forms import CommentForm, EmployeeForm, PostForm, UserForm, ReportPostForm,ReportCommentForm, DepartmentForm, SubcommentForm,ReportSubcommentForm
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import UserForm
@@ -20,6 +23,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView
 from django.views.generic import ListView
 from django.db.models import Q
+from django.urls import resolve
 
 # Create your views here.
 
@@ -43,15 +47,19 @@ def overview(request):
 def archiv(request):
     posts = Post.objects.filter(author = request.user)
     comments = Comment.objects.filter(author = request.user)
-    return render(request, 'Forum/archiv.html', {'posts': posts, 'comments': comments})
+    subcomments = Subcomment.objects.filter(author = request.user)
+    return render(request, 'Forum/archiv.html', {'posts': posts, 'comments': comments,'subcomments': subcomments})
 
+#Funktion zum anzeigen der Adminseite
 def adminpage(request):
     return render (request, 'Forum/adminpage.html')
 
+#Funktion zum anzeigen der gemeldeten Posts,Kommentare und Antworten
 def reports(request):
     reported_posts = Postreport.objects.all()
     reported_comments = Commentreport.objects.all()
-    return render(request, 'Forum/reports.html', {'posts': reported_posts, 'comments': reported_comments})
+    reported_subcomments = Subcommentreport.objects.all()
+    return render(request, 'Forum/reports.html', {'posts': reported_posts, 'comments': reported_comments, 'subcomments': reported_subcomments})
 
 def permission_overview(request):
     users = User.objects.all().order_by('-is_staff')
@@ -131,67 +139,91 @@ def delete_post(request, pk):
     post.delete()
     return redirect('overview')
 
-def vote_post(request, pk, vote):
-    post = Post.objects.get(pk = pk)
+def vote(request, pk, vote, typ):
     reaction = vote
-    url = '/post/' + pk
+    url = request.META.get('HTTP_REFERER')
+    if typ == 'post':
+        entry = Post.objects.get(pk = pk)
 
-    try:
+        try:
+            vote = Postvotes.objects.get(post_id = pk, author_id = request.user)
+        except:
+            vote = None
+
+        if vote is None:
+            Postvotes.objects.create(author_id = request.user.id, post_id = pk, like = False, dislike = False)
+        
         vote = Postvotes.objects.get(post_id = pk, author_id = request.user)
-    except:
-        vote = None
+    elif typ == 'comment':
+        entry = Comment.objects.get(pk=pk)
+        try:
+            vote = Votes.objects.get(comment_id = pk, author_id = request.user)
+        except:
+            vote = None
 
-    if vote is None:
-        Postvotes.objects.create(author_id = request.user.id, post_id = pk, like = False, dislike = False)
-    
-    vote = Postvotes.objects.get(post_id = pk, author_id = request.user)
+        if vote is None:
+            Votes.objects.create(author_id = request.user.id, comment_id = pk, like = False, dislike = False)
+        
+        vote = Votes.objects.get(comment_id = pk, author_id = request.user)
+    else:
+        entry = Subcomment.objects.get(pk=pk)
+        try:
+            vote = Subcommentvotes.objects.get(subcomment_id = pk, author_id = request.user)
+        except:
+            vote = None
+
+        if vote is None:
+            Subcommentvotes.objects.create(author_id = request.user.id, subcomment_id = pk, like = False, dislike = False)
+        
+        vote = Subcommentvotes.objects.get(subcomment_id = pk, author_id = request.user)
+
 
     #überprüfen ob like Button, den Request ausgelöst hat
     if reaction == 'like':
         #überprüfen ob Like-Button schon aktiv ist
         if vote.like == True:
             vote.like = False
-            post.voteCount -= 1
+            entry.voteCount -= 1
             vote.save()
-            post.save()
+            entry.save()
             return redirect(url)
         #überprüfen ob dislike button aktiv ist
         elif vote.dislike == True:
             vote.dislike = False
             vote.like = True
-            post.voteCount += 2
+            entry.voteCount += 2
             vote.save()
-            post.save()
+            entry.save()
             return redirect(url)
         #falls noch kein Button aktiv ist
         else:
             vote.like = True
-            post.voteCount += 1
+            entry.voteCount += 1
             vote.save()
-            post.save()
+            entry.save()
             return redirect(url)
     
     if reaction == 'dislike':
         if vote.dislike == True:
             vote.dislike = False
-            post.voteCount += 1
+            entry.voteCount += 1
             vote.save()
-            post.save()
+            entry.save()
             return redirect(url)
 
         elif vote.like == True:
             vote.like = False
             vote.dislike = True
-            post.voteCount -= 2
+            entry.voteCount -= 2
             vote.save()
-            post.save()
+            entry.save()
             return redirect(url)
 
         else:
             vote.dislike = True
-            post.voteCount -= 1
+            entry.voteCount -= 1
             vote.save()
-            post.save()
+            entry.save()
             return redirect(url)
     
 
@@ -237,91 +269,89 @@ def report_comment(request, pk):
         form = ReportCommentForm()
     return render(request, 'Forum/reportPost.html', {'form': form, 'entry': entry})
 
-
-def vote_comment(request, pk, vote):
+#Funktionen für subcomments
+def detail_comment(request, pk):
+    #get alle comments mit fk = post-pk
     comment = Comment.objects.get(pk=pk)
-    reaction = vote
-    #post um url für return render zu generieren
-    post = comment.post_id
-    url = '/post/' + str(post)
-    try:
-        vote = Votes.objects.get(comment_id = pk, author_id = request.user)
-    except:
-        vote = None
+    post = Post.objects.get(pk=comment.post_id)
+    subcomments = Subcomment.objects.filter(comment_id = pk).order_by('-voteCount')
+    url = "/comment/" + str(comment.id) + "/detail/"
+    #speichern eines Kommentars, wenn Kommentarfeld genutzt wird (request.method = Post)
+    if request.method == "POST":
+        subcomment_form = SubcommentForm(request.POST)
+        if subcomment_form.is_valid():
+            subcomment = subcomment_form.save(commit=False)
+            subcomment.author = request.user
+            subcomment.voteCount = 0
+            subcomment.comment_id = pk
+            subcomment.save()
+            return redirect(url)
+    #sonst CommentForm() nur anzeigens
+    else:
+        subcomment_form = SubcommentForm()
+    return render(request, 'Forum/commentDetail.html', {'post': post, 'comment': comment,'subcomments': subcomments, 'form': subcomment_form})
 
-    if vote is None:
-        Votes.objects.create(author_id = request.user.id, comment_id = pk, like = False, dislike = False)
+def update_subcomment(request, pk):
+    subcomment = Subcomment.objects.get(pk=pk)
+    comment = subcomment.comment_id
+    url = '/comment/' + str(comment) + '/detail/'
+    form = SubcommentForm(request.POST or None, instance=subcomment)
+
+    if form.is_valid():
+        form.save()
+        return redirect(url)
     
-    vote = Votes.objects.get(comment_id = pk, author_id = request.user)
-    
-    #überprüfen ob like Button, den Request ausgelöst hat
-    if reaction == 'like':
-        #überprüfen ob Like-Button schon aktiv ist
-        if vote.like == True:
-            vote.like = False
-            comment.voteCount -= 1
-            vote.save()
-            comment.save()
-            return redirect(url)
-        #überprüfen ob dislike button aktiv ist
-        elif vote.dislike == True:
-            vote.dislike = False
-            vote.like = True
-            comment.voteCount += 2
-            vote.save()
-            comment.save()
-            return redirect(url)
-        #falls noch kein Button aktiv ist
-        else:
-            vote.like = True
-            comment.voteCount += 1
-            vote.save()
-            comment.save()
-            return redirect(url)
-    
-    if reaction == 'dislike':
-        if vote.dislike == True:
-            vote.dislike = False
-            comment.voteCount += 1
-            vote.save()
-            comment.save()
-            return redirect(url)
+    return render(request, 'Forum/updateComment.html', {'form': form})
 
-        elif vote.like == True:
-            vote.like = False
-            vote.dislike = True
-            comment.voteCount -= 2
-            vote.save()
-            comment.save()
-            return redirect(url)
+def delete_subcomment(request, pk):
+    subcomment = Subcomment.objects.get(pk=pk)
+    comment = subcomment.comment_id
+    url = '/comment/' + str(comment) + '/detail/'
 
-        else:
-            vote.dislike = True
-            comment.voteCount -= 1
-            vote.save()
-            comment.save()
-            return redirect(url)
-
-
+    subcomment.delete()
     return redirect(url)
+
+def report_subcomment(request, pk):
+    entry = Subcomment.objects.get(pk=pk)
+    comment = entry.subcomment.id
+    url = '/comment/' + comment + '/detail/'
+    if request.method == "POST":
+        form = ReportSubcommentForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.report_date = timezone.now()
+            report.subcomment_id = pk
+            report.save()
+            messages.success(request, "Kommentar wurde gemeldet")
+            return redirect(url)
+    else:
+        form = ReportSubcommentForm()
+    return render(request, 'Forum/reportPost.html', {'form': form, 'entry': entry})
 
 
 def release_report(request, pk, type):
     if type == 'comment':
         comment = Commentreport.objects.filter(comment_id = pk)
         comment.delete()
-    else:
+    elif type =='post':
         post = Postreport.objects.filter(post_id = pk)
         post.delete()
+    else:
+        subcomment = Subcommentreport.objects.filter(subcomment_id=pk)
+        subcomment.delete()
     return redirect('reports')
 
 def delete_report(request,pk,type):
     if type == 'comment':
         comment = Comment.objects.get(pk = pk)
         comment.delete()
-    else:
+    elif type == 'post':
         post = Post.objects.get(pk = pk)
         post.delete()
+    else:
+        subcomment = Subcomment.objects.get(pk=pk)
+        subcomment.delete()
     return redirect('reports')
 
 def add_department(request):

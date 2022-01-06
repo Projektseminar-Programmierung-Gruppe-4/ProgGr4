@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db.models import fields
-from .models import Comment, Department, Employee, Post, Postreport, Commentreport
+from .models import Comment, Department, Employee, Post, Postreport, Commentreport, Subcomment, Subcommentreport
 import re
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -70,10 +70,16 @@ class EmployeeForm(forms.ModelForm):
     class Meta:
         model= Employee
         fields = ("birthdate", "department")
+
 class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
+        fields = ("text",)
+
+class SubcommentForm(forms.ModelForm):
+    class Meta:
+        model = Subcomment
         fields = ("text",)
 
 class ReportPostForm(forms.ModelForm):
@@ -89,6 +95,11 @@ class ReportCommentForm(forms.ModelForm):
         model = Commentreport
         fields = ("report_message",)
 
+class ReportSubcommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Subcommentreport
+        fields = ("report_message",)
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department

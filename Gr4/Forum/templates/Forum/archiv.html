@@ -40,6 +40,15 @@
     </div>
     {% endfor %}
 
+    <h1>Meine Antworten:</h1>
+    {%for subcomment in subcomments%}
+    <div class="entrys" id="entrys">
+        <p>{{subcomment.text}}</p>
+        <p><b>{{subcomment.author}} on {{subcomment.created_date}}</b></p>
+        <a href="{% url 'detail-comment' pk=subcomment.comment_id %}">Thread ansehen</a>
+    </div>
+    {% endfor %}
+
 
 </body>
 </html>

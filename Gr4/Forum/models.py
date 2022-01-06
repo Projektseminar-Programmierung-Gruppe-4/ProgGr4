@@ -37,6 +37,17 @@ class Comment(models.Model):
     def __str__(self):
         return self.text
 
+class Subcomment(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.ForeignKey(Comment, on_delete = models.CASCADE, related_name="subcomments", blank=True, null=True)
+
+    text = models.TextField()
+    voteCount = models.IntegerField(null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+
 class Votes(models.Model):
     comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="vote")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -49,6 +60,16 @@ class Votes(models.Model):
 
 class Postvotes(models.Model):
     post = models.ForeignKey(Post,on_delete = models.CASCADE, related_name="postvote")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    like = models.BooleanField()
+    dislike = models.BooleanField()
+
+    def __str__(self):
+        return self.id
+
+class Subcommentvotes(models.Model):
+    subcomment = models.ForeignKey(Subcomment,on_delete = models.CASCADE, related_name="subcommentvote")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     like = models.BooleanField()
@@ -92,3 +113,13 @@ class Commentreport(models.Model):
 
     def __str__(self):
         return self.comment.text
+
+class Subcommentreport(models.Model):
+    subcomment = models.ForeignKey(Subcomment,on_delete = models.CASCADE, related_name="subcomment")
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    report_date = models.DateTimeField(blank=True, null=True)
+    report_message = models.TextField()
+
+    def __str__(self):
+        return self.comment.text
+        

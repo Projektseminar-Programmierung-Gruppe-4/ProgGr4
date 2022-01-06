@@ -33,7 +33,7 @@ div.Testdiv{
     color: #000000;
 }
 
-#comments,#posts{
+#comments,#posts,#subcomments{
     margin: 0 auto;
     margin-top: 1%;
     margin-bottom: 1%;
