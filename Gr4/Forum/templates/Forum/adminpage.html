@@ -1,5 +1,7 @@
 {% load static %}
 
+
+{% if user.is_authenticated and user.is_staff %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,3 +35,4 @@
 
 </body>
 </html>
+{%endif%}

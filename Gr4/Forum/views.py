@@ -52,16 +52,23 @@ def archiv(request):
 
 #Funktion zum anzeigen der Adminseite
 def adminpage(request):
+    if request.user.is_staff == False:
+        return HttpResponse('Unauthorized', status=401)
     return render (request, 'Forum/adminpage.html')
 
 #Funktion zum anzeigen der gemeldeten Posts,Kommentare und Antworten
 def reports(request):
+    if request.user.is_staff == False:
+        return HttpResponse('Unauthorized', status=401)
+        
     reported_posts = Postreport.objects.all()
     reported_comments = Commentreport.objects.all()
     reported_subcomments = Subcommentreport.objects.all()
     return render(request, 'Forum/reports.html', {'posts': reported_posts, 'comments': reported_comments, 'subcomments': reported_subcomments})
 
 def permission_overview(request):
+    if request.user.is_staff == False:
+        return HttpResponse('Unauthorized', status=401)
     users = User.objects.all().order_by('-is_staff')
     return render(request, 'Forum/permissions.html', {'users': users})
 
@@ -313,8 +320,8 @@ def delete_subcomment(request, pk):
 
 def report_subcomment(request, pk):
     entry = Subcomment.objects.get(pk=pk)
-    comment = entry.subcomment.id
-    url = '/comment/' + comment + '/detail/'
+    comment = entry.comment_id
+    url = '/comment/' + str(comment) + '/detail/'
     if request.method == "POST":
         form = ReportSubcommentForm(request.POST)
         if form.is_valid():
@@ -355,6 +362,8 @@ def delete_report(request,pk,type):
     return redirect('reports')
 
 def add_department(request):
+    if request.user.is_staff == False:
+        return HttpResponse('Unauthorized', status=401)
     departments = Department.objects.all()
     if request.method == "POST":
         form = DepartmentForm(request.POST)
