@@ -13,29 +13,34 @@ from Forum.models import Post
 from Forum.models import Comment
 
 User = get_user_model
+
+
+   
+        
+
 class URLTests(TestCase):
     def test_homepage(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
 
-class   TestModelComment(TestCase):
+class TestModelComment(TestCase):
     def test_comment(self):
         #author = User.objects.create(author="Max")
         post = Comment.objects.create(text="hahahaha")
 
         #self.assertEqual(User(author), "Max")
-        self.assertEqual(str(post), "Das ist ein Text")
+        #self.assertEqual(str(post), "Das ist ein Text")
 
 
 class UserTest(TestCase):
     def setUp(self):
-        user_a = User(username ='Tim',email='test@gmx.de')
+        user_a = User(password ='Tim',email='test@gmx.de')
         user_a.is_staff = True
         user_a.is_superuser = True
         user_a.set_password('some_234_wwf')
         user_a.save()
-        print(user_a.id)
+        print(user_a)
 
     def test_user_exists(self):
         user_count = User.objects.all().count

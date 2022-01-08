@@ -18,7 +18,7 @@ class TestForumModel(TestCase):
     def test_model(self):
         title = Post.objects.create(title="Test Title")
         voteCount = Post.objects.create(voteCount= 2)
-        #text = Post.objects.create(text="Test text ")
+        
 
         self.assertEqual(str(title), "Test Title")
         #self.assertEqual(int(voteCount),2 )
