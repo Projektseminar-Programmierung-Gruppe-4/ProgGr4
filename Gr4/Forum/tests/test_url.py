@@ -12,11 +12,6 @@ from django.contrib.auth import get_user_model
 from Forum.models import Post
 from Forum.models import Comment
 
-User = get_user_model
-
-
-   
-        
 
 class URLTests(TestCase):
     
@@ -40,22 +35,5 @@ class URLTests(TestCase):
         
 
 
-class TestModelComment(TestCase):
-    def test_comment(self):
-        #author = User.objects.create(author="Max")
-        post = Comment.objects.create(text="hahahaha")
-
-        #self.assertEqual(User(author), "Max")
-        #self.assertEqual(str(post), "Das ist ein Text")
-
-
-
-class TestForumModel(TestCase):
-
-    def test_model(self):
-        title = Post.objects.create(title="Test Title")
-        #text = Post.objects.create(text="Test text ")
-
-        self.assertEqual(str(title), "Test Title")
 
 
