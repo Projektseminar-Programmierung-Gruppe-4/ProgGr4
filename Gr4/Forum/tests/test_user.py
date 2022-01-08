@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model, login
 from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from Forum.forms import *
 
 
 class UserCreationFormTest(TestCase):
@@ -15,7 +16,7 @@ class UserCreationFormTest(TestCase):
     def test_user(self):
 
         data = {
-            'username':"TestUse", 
+            'username':"TestUser", 
             'email':"test@gmx.net", 
             'password1':"maxstinkt123", 
             'password2':"maxstinkt123", 
@@ -25,15 +26,40 @@ class UserCreationFormTest(TestCase):
         form = UserCreationForm(data)
         self.assertTrue(form.is_valid())
         
-        self.assertTrue(form["username"], "TestsUse")
+        self.assertTrue(form["username"], "TestsUser")
         #self.assertEqual(form["username"].errors, [force_text(User._meta.get_field('username'))])
         client = Client()
-        self.assertTrue(client.session)
         client.login(username='TestUse', password='maxstinkt123')
+        self.assertTrue(client.session) # nicht sicher aber sollte True sein wenn erfolgreiche Session
         
-        self.assertTrue(client.session)
-        response = client.get("/create")
-        self.assertEqual(response.status_code, 200)    
+        
+
+        #zugriff home seite
+        response_home = client.get("/")
+        self.assertEqual(response_home.status_code, 200) 
+
+         #zugriff auf post erstellung
+        response_create_post = client.get("/create")
+        self.assertEqual(response_create_post.status_code, 200) 
+
+        response_view_post = client.get("/view/1")
+        self.assertEqual(response_view_post.status_code, 404) 
+
+        #zugriff home seite
+        response_comment = client.get("/comment")
+        self.assertEqual(response_comment.status_code, 404) 
+
+        #zugriff home seite
+        response_subcomment = client.get("/subcomment")
+        self.assertEqual(response_subcomment.status_code, 404) 
+
+        #Zugriff admin page (user kein moderator)
+        response_adminpage = client.get("/adminpage")
+        self.assertEqual(response_adminpage.status_code, 401)    #keine Berechtigung
+        
+       
+        
+
 
 User = get_user_model
 """

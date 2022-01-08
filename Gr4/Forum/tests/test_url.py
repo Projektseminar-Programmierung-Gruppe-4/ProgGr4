@@ -19,9 +19,25 @@ User = get_user_model
         
 
 class URLTests(TestCase):
+    
     def test_homepage(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
+    
+    def test_admin_page(self):
+        response = self.client.get('/admin/login/?next=/admin/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_homepage(self):
+        response = self.client.get('/login')
+        self.assertEqual(response.status_code, 200)
+
+    def test_homepage(self):
+        response = self.client.get('/register')
+        self.assertEqual(response.status_code, 200)
+
+    
+        
 
 
 class TestModelComment(TestCase):
@@ -32,19 +48,6 @@ class TestModelComment(TestCase):
         #self.assertEqual(User(author), "Max")
         #self.assertEqual(str(post), "Das ist ein Text")
 
-
-class UserTest(TestCase):
-    def setUp(self):
-        user_a = User(password ='Tim',email='test@gmx.de')
-        user_a.is_staff = True
-        user_a.is_superuser = True
-        user_a.set_password('some_234_wwf')
-        user_a.save()
-        print(user_a)
-
-    def test_user_exists(self):
-        user_count = User.objects.all().count
-        self.assertEqual(user_count,1) 
 
 
 class TestForumModel(TestCase):
