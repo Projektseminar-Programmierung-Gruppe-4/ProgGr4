@@ -24,27 +24,24 @@
     {% for post in posts %}
         <div class="entrys" id="entrys">
             <!--<h2><a href="">{{ post.title }}</a></h2>-->
-            <h2><a href="{% url 'detail' pk=post.pk %}">{{ post.title }}</a></h2>
-            <p>{{ post.text|linebreaksbr }}</p>
-            <!--<p>Votecount = {{post.voteCount}}</p>-->
-            <time>Veröffentlicht: {{ post.published_date }}</time>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.text}} - <small>{{post.created_date}}</small></p>
+            <a href="{% url 'detail' pk=post.pk %}">Thread ansehen</a>
         </div>
     {% endfor %}
 
     <h1>Meine Kommentare:</h1>
     {%for comment in comments%}
     <div class="entrys" id="entrys">
-        <p>{{comment.text}}</p>
-        <p><b>{{comment.author}} on {{comment.created_date}}</b></p>
-        <a href="{% url 'detail' pk=comment.post_id %}">Post ansehen</a>
+        <p>{{comment.text}} - <small>{{comment.created_date}}</small></p>
+        <a href="{% url 'detail' pk=comment.post_id %}">Thread ansehen</a>
     </div>
     {% endfor %}
 
     <h1>Meine Antworten:</h1>
     {%for subcomment in subcomments%}
     <div class="entrys" id="entrys">
-        <p>{{subcomment.text}}</p>
-        <p><b>{{subcomment.author}} on {{subcomment.created_date}}</b></p>
+        <p>{{subcomment.text}}- <small>{{subcomment.created_date}}</small></p>
         <a href="{% url 'detail-comment' pk=subcomment.comment_id %}">Thread ansehen</a>
     </div>
     {% endfor %}
