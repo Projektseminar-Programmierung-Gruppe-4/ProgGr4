@@ -142,13 +142,12 @@
             <div class="post-comment">
                 <form method="POST" class="post-form">
                     {% csrf_token %}
-                    <!--{{ comment_form.as_p }}-->
                     {%for field in form%}
                         <div>
                             <b>Kommentar:</b> <br>{{field}} {{field.errors}}
                         </div>
                     {%endfor%}
-                    <button type="submit" class=" btn btn-outline-success">Speichern</button>
+                    <button type="submit" class="btn btn-success btn-sm">Speichern</button>
                 </form>
             </div>
             {%endif%}

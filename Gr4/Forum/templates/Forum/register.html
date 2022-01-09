@@ -31,12 +31,15 @@
                 </div>
             {%endfor%}
 
-            {%for field in employee_form%}
-                <div>
-                    {{field.label_tag}} {{field}} {{field.errors}}
-                </div>
-            {%endfor%}
-            <button type="submit" class="">Speichern</button>
+            <div>
+                <label>Geburtsdatum (Format: dd.mm.yyyy):</label>
+                {{employee_form.birthdate}} {{employee_form.birthdate.errors}}
+            </div>
+            <div>
+                <label>Abteilung:</label>
+                {{employee_form.department}} {{employee_form.department.errors}}
+            </div>
+            <button type="submit" class="btn btn-success btn-sm">Speichern</button>
         </form>
     </body>
 </html>
