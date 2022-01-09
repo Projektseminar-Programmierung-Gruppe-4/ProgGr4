@@ -36,8 +36,12 @@ def overview(request):
     if search != '' and search is not None:
         posts = posts.filter(Q(title__icontains = search) | Q(text__icontains = search))
     if filter != '' and filter is not None:
-        if filter == 'votecount':
+        if filter == 'votecount-desc':
             posts = posts.order_by('-voteCount')
+        elif filter == 'votecount-asc':
+            posts = posts.order_by('voteCount')
+        elif filter == 'date-old':
+            posts = posts.order_by('created_date')
         else:
             posts = posts.order_by('-created_date')
 

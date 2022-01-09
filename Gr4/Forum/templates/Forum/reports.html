@@ -25,10 +25,9 @@
     <div class="entrys" id="entrys">
         <div class="posts" id="posts">
             <!--<h2><a href="">{{ post.title }}</a></h2>-->
-            <h2><a href="{% url 'detail' pk=post.post.pk %}">{{ post.post.title }}</a></h2>
-            <p>{{ post.post.text|linebreaksbr }}</p>
-            <!--<p>Votecount = {{post.voteCount}}</p>-->
-            <time>Veröffentlicht: {{ post.post.published_date }}</time>
+            <h3>{{ post.post.title }}</h3>
+            <p>{{ post.post.text}} - <small>{{post.post.author}} am {{post.post.created_date}}</small></p>
+            <a href="{% url 'detail' pk=post.post.pk %}">Thread ansehen</a>
         </div>
         <p>Gemeldet von: {{ post.reporter }}</p>
         <p>Nachricht: {{ post.report_message }}</p>
@@ -52,9 +51,8 @@
     {%for comment in comments%}
     <div class="entrys" id="entrys">
         <div class="comments" id="comments">
-            <p>{{comment.comment.text}}</p>
-            <p><b>{{comment.comment.author}} am {{comment.comment.created_date}}</b></p>
-            <a href="{% url 'detail' pk=comment.comment.post_id %}">ganzes Thread ansehen</a>
+            <p>{{comment.comment.text}} - <small>{{comment.comment.author}} am {{comment.comment.created_date}}</small></p>
+            <a href="{% url 'detail' pk=comment.comment.post_id %}">Thread ansehen</a>
         </div>
         <p>Gemeldet von: {{ comment.reporter }}</p>
         <p>Nachricht: {{ comment.report_message }}</p>
@@ -78,9 +76,8 @@
     {%for subcomment in subcomments%}
     <div class="entrys" id="entrys">
         <div class="subcomments" id="subcomments">
-            <p>{{subcomment.subcomment.text}}</p>
-            <p><b>{{subcomment.subcomment.author}} am {{subcomment.subcomment.created_date}}</b></p>
-            <a href="{% url 'detail-comment' pk=subcomment.subcomment.comment_id %}">ganzes Thread ansehen</a>
+            <p>{{subcomment.subcomment.text}} - <small>{{subcomment.subcomment.author}} am {{subcomment.subcomment.created_date}}</small></p>
+            <a href="{% url 'detail-comment' pk=subcomment.subcomment.comment_id %}">Thread ansehen</a>
         </div>
         <p>Gemeldet von: {{ subcomment.reporter }}</p>
         <p>Nachricht: {{ subcomment.report_message }}</p>

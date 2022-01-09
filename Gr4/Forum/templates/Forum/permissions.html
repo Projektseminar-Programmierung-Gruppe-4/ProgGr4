@@ -21,8 +21,15 @@
     <h2>Benutzer</h2>
     {% for user in users %}
         <div class="entrys" id="entrys">
-            {%if user.is_staff == True%}
-            <a href="{% url 'remove-permission' pk=user.pk %}" id='delete' class = "btn btn-outline-danger btn-sm">
+            {%if user.is_superuser == True%}
+            <a href="" id='delete' class = "btn btn-outline-warning btn-sm">
+                <!--<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                  </svg>-->
+                Administrator
+            </a>
+            {%elif user.is_staff == True%}
+           <a href="{% url 'remove-permission' pk=user.pk %}" id='delete' class = "btn btn-outline-danger btn-sm">
                 <!--<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
                     <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
                   </svg>-->

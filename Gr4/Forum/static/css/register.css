@@ -1,19 +1,21 @@
 h1 a, h1, h2  {
     color: #000000;
-    padding: 10px 500px;
+    text-align: center;
     
 }
 
 .register-form,.login-form,.no-account,.post-form,.update-form{
 
-    padding: 10px 500px;
-  
-
+    /*padding: 10px 500px;*/
+    max-width: 800px;
+    min-width: 600px;
+    width: calc(100% - 164px);
+    margin: 0 auto;
 }
 
 
 
-input[type=text], input[type=password], input[type= email], textarea {
+input[type=text], input[type=password], input[type= email], textarea, select {
     width: 100%;
     padding: 10px 10px;
     margin: 8px 0;
