@@ -68,6 +68,7 @@ class test_user_form(TestCase):
         self.assertNotEqual(user_invalid_form.first_name, "Manfred")
         self.assertNotEqual(user_invalid_form.last_name, "Eisbär")
         
+        
 
 
 

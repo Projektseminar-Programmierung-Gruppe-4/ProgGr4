@@ -2,6 +2,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import LazySettings, settings
+from django.db.models.fields import NullBooleanField
 from django.utils import timezone
 
 #from Forum.tests.tests import User
@@ -49,8 +50,8 @@ class Subcomment(models.Model):
         return self.text
 
 class Votes(models.Model):
-    comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="vote")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment,on_delete = models.CASCADE, related_name="vote", blank=True, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
 
     like = models.BooleanField()
     dislike = models.BooleanField()
@@ -59,8 +60,8 @@ class Votes(models.Model):
         return self.id
 
 class Postvotes(models.Model):
-    post = models.ForeignKey(Post,on_delete = models.CASCADE, related_name="postvote")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,on_delete = models.CASCADE, related_name="postvote", blank=True , null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE , blank=True, null=True)
 
     like = models.BooleanField()
     dislike = models.BooleanField()
@@ -69,8 +70,8 @@ class Postvotes(models.Model):
         return self.id
 
 class Subcommentvotes(models.Model):
-    subcomment = models.ForeignKey(Subcomment,on_delete = models.CASCADE, related_name="subcommentvote")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subcomment = models.ForeignKey(Subcomment,on_delete = models.CASCADE, related_name="subcommentvote" , blank=True , null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE , blank=True, null=True)
 
     like = models.BooleanField()
     dislike = models.BooleanField()
@@ -121,5 +122,5 @@ class Subcommentreport(models.Model):
     report_message = models.TextField()
 
     def __str__(self):
-        return self.comment.text
+        return self.subcomment.text
         
