@@ -32,4 +32,5 @@ urlpatterns = [
     path('subcomment/<pk>/delete/', views.delete_subcomment, name='delete-subcomment'),
     path('subcomment/<pk>/report/', views.report_subcomment, name='report-subcomment'),
     path('vote/<typ>/<pk>/<vote>/', views.vote, name='vote'),
+    path('user/<pk>/update/', views.update_user, name='update-user'),
 ]

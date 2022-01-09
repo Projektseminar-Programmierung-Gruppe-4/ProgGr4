@@ -31,6 +31,7 @@ div.Testdiv {
   padding: 12px;
   border: 1px solid #000000;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
   color: #000000;
 }
 
@@ -53,6 +54,7 @@ div.Testdiv {
   padding: 12px;
   border: 1px solid #000000;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
   color: #000000;
 }
 

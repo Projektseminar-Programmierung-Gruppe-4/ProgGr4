@@ -13,6 +13,7 @@ from Forum.models import Department
 from Forum.models import Subcomment
 from Forum.models import Subcommentvotes
 from Forum.models import Subcommentreport
+from Forum.models import Employee
 from .forms import CommentForm, EmployeeForm, PostForm, UserForm, ReportPostForm,ReportCommentForm, DepartmentForm, SubcommentForm,ReportSubcommentForm
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -418,6 +419,43 @@ def register_user(request):
         employee_form = EmployeeForm()
     return render(request, 'Forum/register.html', {'register_form': form, 'employee_form': employee_form})
 
+def update_user(request,pk):
+    user = User.objects.get(pk=pk)
+    try:
+        employee = Employee.objects.get(user_id=pk)
+    except:
+        employee = None
+    
+    if employee != None:
+        form = UserForm(request.POST or None, instance=user)
+        employee_form = EmployeeForm(request.POST or None, instance=employee)
+
+        if form.is_valid() and employee_form.is_valid():
+            user = form.save()
+            employee_form.save()
+            login(request, user)
+            messages.success(request, "Profil erfolgreich bearbeitet")
+            return redirect('overview')
+
+
+    else:
+        form = UserForm(request.POST or None, instance=user)
+        employee_form = EmployeeForm(request.POST)
+
+        if form.is_valid() and employee_form.is_valid():
+            user = form.save()
+
+            employee = employee_form.save(commit=False)
+            employee.user = user
+            employee.save()
+
+            login(request, user)
+            messages.success(request, "Profil erfolgreich bearbeitet")
+            return redirect('overview')
+
+    
+    return render(request, 'Forum/updateUser.html', {'form': form, 'employee_form': employee_form})
+
 def login_user(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data = request.POST)
@@ -429,7 +467,6 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f"Servus und Willkommen: {username}!")
-                print("successfull login")
                 return redirect('overview')
             else:
                 messages.error(request, "Falscher Username oder Passwort")

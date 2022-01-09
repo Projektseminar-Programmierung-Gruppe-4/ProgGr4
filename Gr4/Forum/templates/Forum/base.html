@@ -21,6 +21,7 @@
         <!--Navbar-->
         {% include 'Forum/includes/navbar.html' %}
     </header>
+
     <div class="filter" id="filter">
         <form method="GET" action=".">
             <div class="filter-item">
@@ -51,7 +52,7 @@
         <hr>
 
         <div class="post-thumbs">
-            <a class="btn btn-outline-dark btn-sm"> {{post.voteCount}}</a>
+            <a class="btn btn-secondary btn-sm">Votes: {{post.voteCount}}</a>
             {%if user.is_authenticated%}
             <a href="{% url 'vote' pk=post.pk vote='like' typ='post' %}" class="btn btn-outline-success btn-sm">
                 {%if post.pk|post_isliked:user.id %}
