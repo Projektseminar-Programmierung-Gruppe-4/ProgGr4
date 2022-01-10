@@ -26,7 +26,7 @@
         <div class="posts" id="posts">
             <!--<h2><a href="">{{ post.title }}</a></h2>-->
             <h3>{{ post.post.title }}</h3>
-            <p>{{ post.post.text}} - <small>{{post.post.author}} am {{post.post.created_date}}</small></p>
+            <p>{{ post.post.text|linebreaksbr}} - <small>{{post.post.author}} am {{post.post.created_date}}</small></p>
             <a href="{% url 'detail' pk=post.post.pk %}">Thread ansehen</a>
         </div>
         <p>Gemeldet von: {{ post.reporter }}</p>
@@ -51,7 +51,7 @@
     {%for comment in comments%}
     <div class="entrys" id="entrys">
         <div class="comments" id="comments">
-            <p>{{comment.comment.text}} - <small>{{comment.comment.author}} am {{comment.comment.created_date}}</small></p>
+            <p>{{comment.comment.text|linebreaksbr}} - <small>{{comment.comment.author}} am {{comment.comment.created_date}}</small></p>
             <a href="{% url 'detail' pk=comment.comment.post_id %}">Thread ansehen</a>
         </div>
         <p>Gemeldet von: {{ comment.reporter }}</p>
@@ -76,7 +76,7 @@
     {%for subcomment in subcomments%}
     <div class="entrys" id="entrys">
         <div class="subcomments" id="subcomments">
-            <p>{{subcomment.subcomment.text}} - <small>{{subcomment.subcomment.author}} am {{subcomment.subcomment.created_date}}</small></p>
+            <p>{{subcomment.subcomment.text|linebreaksbr}} - <small>{{subcomment.subcomment.author}} am {{subcomment.subcomment.created_date}}</small></p>
             <a href="{% url 'detail-comment' pk=subcomment.subcomment.comment_id %}">Thread ansehen</a>
         </div>
         <p>Gemeldet von: {{ subcomment.reporter }}</p>

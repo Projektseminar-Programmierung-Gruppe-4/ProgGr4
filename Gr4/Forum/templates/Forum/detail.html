@@ -49,9 +49,9 @@
             </a>
         </div>
         {%endif%}
-        {%if user.is_authenticated%}
         <div class="post-thumbs">
             <a class = "btn btn-secondary btn-sm">Votes: {{post.voteCount}}</a>
+            {%if user.is_authenticated%}
             <a href="{% url 'vote' pk=post.pk vote='like' typ='post' %}" class="btn btn-outline-success btn-sm">
                 {%if post.pk|post_isliked:user.id %}
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 16 16">
@@ -75,8 +75,8 @@
                   </svg>
                 {%endif%}
             </a>
+            {%endif%}
         </div>
-        {%endif%}
         <br>
         <br>
 
@@ -85,11 +85,10 @@
             {%if user.is_authenticated and user != comment.author%}
             <a href="{% url 'report-comment' pk=comment.pk %}" id="report" class = "btn btn-outline-danger btn-sm">Kommentar melden</a>
             {%endif%}
-            <p>{{comment.text}} - <small>{{comment.author}} am {{comment.created_date}}</small></p>
+            <p>{{comment.text|linebreaksbr}} - <small>{{comment.author}} am {{comment.created_date}}</small></p>
             <p><a href="{% url 'detail-comment' pk=comment.pk %}">Antworten ansehen</a></p>
 
 
-            {% if user.is_authenticated %}
             {%if user == comment.author or user.is_staff == True%}
             <div class="edit-comment">
                 {%if user == comment.author%}
@@ -109,6 +108,7 @@
             {%endif%}
             <div class="thumbs">
                 <a class = "btn btn-secondary btn-sm">Votes: {{comment.voteCount}}</a>
+                {% if user.is_authenticated %}
                 <a href="{% url 'vote' pk=comment.pk vote='like' typ='comment' %}" class="btn btn-outline-success btn-sm">
                     {%if comment.pk|comment_isliked:user.id %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 16 16">
@@ -132,8 +132,8 @@
                       </svg>
                     {%endif%}
                 </a>
+                {%endif%}
             </div>
-            {%endif%}
 
         </div>
         {%endfor%}

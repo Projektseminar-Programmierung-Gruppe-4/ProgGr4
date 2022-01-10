@@ -37,10 +37,9 @@
             {%if user.is_authenticated and user != comment.author%}
             <a href="{% url 'report-comment' pk=comment.pk %}" id="report" class = "btn btn-outline-danger btn-sm">Kommentar melden</a>
             {%endif%}
-            <p>{{comment.text}} - <small>{{comment.author}} am {{comment.created_date}}</small></p>
+            <p>{{comment.text|linebreaksbr}} - <small>{{comment.author}} am {{comment.created_date}}</small></p>
 
 
-            {% if user.is_authenticated %}
             {%if user == comment.author or user.is_staff == True%}
             <div class="edit-comment">
                 {%if user == comment.author%}
@@ -60,6 +59,7 @@
             {%endif%}
             <div class="thumbs">
                 <a class = "btn btn-secondary btn-sm">Votes: {{comment.voteCount}}</a>
+                {% if user.is_authenticated %}
                 <a href="{% url 'vote' pk=comment.pk vote='like' typ='comment' %}" class="btn btn-outline-success btn-sm">
                     {%if comment.pk|comment_isliked:user.id %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 16 16">
@@ -83,15 +83,15 @@
                       </svg>
                     {%endif%}
                 </a>
+                {%endif%}
             </div>
-            {%endif%}
             <br>
             {%for subcomment in subcomments%}
             <div class = "subcomments" id="subcomments">
                 {%if user.is_authenticated and user != subcomment.author%}
                     <a href="{% url 'report-subcomment' pk=subcomment.pk %}" id="report" class = "btn btn-outline-danger btn-sm">Antwort melden</a>
                 {%endif%}
-                <p>{{subcomment.text}} - <small>{{subcomment.author}} am {{subcomment.created_date}}</small></p>
+                <p>{{subcomment.text|linebreaksbr}} - <small>{{subcomment.author}} am {{subcomment.created_date}}</small></p>
                 {%if user == subcomment.author or user.is_staff == True%}
                 <div class="edit-comment">
                     {%if user == subcomment.author%}
@@ -111,6 +111,7 @@
                 {%endif%}
                 <div class="thumbs">
                     <a class = "btn btn-secondary btn-sm">Votes: {{subcomment.voteCount}}</a>
+                    {%if user.is_authenticated%}
                     <a href="{% url 'vote' pk=subcomment.pk vote='like' typ='subcomment'%}" class="btn btn-outline-success btn-sm">
                         {%if subcomment.pk|subcomment_isliked:user.id %}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 16 16">
@@ -134,6 +135,7 @@
                           </svg>
                         {%endif%}
                     </a>
+                    {%endif%}
                 </div>
             </div>
             {%endfor%}
