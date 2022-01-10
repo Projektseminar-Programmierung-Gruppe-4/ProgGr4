@@ -15,9 +15,7 @@
         <h2>Melden</h2>
         <div class="entrys" id="entrys">
             <h3>{{ entry.title }}</h3>
-            <p>{{ entry.text|linebreaksbr }}</p>
-            <p>Author: {{entry.author}}</p>
-            <time>Veröffentlicht: {{ entry.created_date }}</time>
+            <p>{{ entry.text|linebreaksbr }} - <small>{{entry.author}} am {{ entry.created_date }}</small></p>
         </div>
         <form method="POST" class="post-form">
             {% csrf_token %}
