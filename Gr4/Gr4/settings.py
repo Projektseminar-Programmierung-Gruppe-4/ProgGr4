@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Forum',
-    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -78,9 +77,9 @@ WSGI_APPLICATION = 'Gr4.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ProjektGr4(2)' ,
-        'USER' : 'postgres' ,
-        'PASSWORD' : 'Maxstinkt123',
+        'NAME': 'Database-Name' ,
+        'USER' : 'Username' ,
+        'PASSWORD' : 'Password',
         'HOST' : 'localhost' ,
         'PORT' : '5432'
     }
