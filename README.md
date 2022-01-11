@@ -6,13 +6,17 @@ Dieses Forum wurde im Zuge des Moduls Projekt Programmierung erstellt.
 
 ### 1. open Project in Texteditor (e.g. VS-Code)
 
-### 2. install django (nur wenn nicht vorhanden)
+### 2. install django und psycopg2 (nur wenn nicht vorhanden)
 
 Installation über pip:
 
-pip3 install django
+pip(3) install django
+python(3) -m pip install psycopg2-binary
   
 ### 3. Aufsetzen einer Postgres Datenbank
+
+-postgreSQL und pgAdmin installieren
+-Datenbank informationen in settings.py einbinden (siehe unten)
 
 ### 4. Einbindung der der Datenbank in Django
 Einbinden der Datenbank über die Settings.py
